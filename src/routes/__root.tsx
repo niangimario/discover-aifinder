@@ -132,7 +132,49 @@ function RootShell({ children }: { children: ReactNode }) {
         {/* End Meta Pixel Code */}
       </head>
       <body>
-        {children}
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                (function(){
+                  try{
+                    document.addEventListener('change', function(e){
+                      try{
+                        var t = e.target;
+                        if(!t || t.id !== 'file-input') return;
+                        var f = t.files && t.files[0];
+                        if(!f) return;
+                        var label = document.querySelector('label[for="file-input"]');
+                        if(!label) return;
+                        var existing = label.querySelector('img.preview-fallback');
+                        if(!existing){
+                          existing = document.createElement('img');
+                          existing.className = 'preview-fallback';
+                          existing.style.width = '100%';
+                          existing.style.height = '100%';
+                          existing.style.objectFit = 'cover';
+                          existing.style.display = 'block';
+                          label.insertBefore(existing, label.firstChild);
+                        }
+                        try{ URL.revokeObjectURL(existing.src); }catch(e){}
+                        existing.src = URL.createObjectURL(f);
+                      }catch(err){console.error('preview-fallback error', err)}
+                    });
+                    // remove preview when the clear button (✕) is clicked
+                    document.addEventListener('click', function(e){
+                      var el = e.target;
+                      if(!el) return;
+                      if(el.innerText === '✕' || el.textContent === '✕'){
+                        var label = document.querySelector('label[for="file-input"]');
+                        var img = label && label.querySelector('img.preview-fallback');
+                        if(img){ try{ URL.revokeObjectURL(img.src); }catch(e){} img.remove(); }
+                      }
+                    });
+                  }catch(e){console.error(e)}
+                })();
+              `,
+              }}
+            />
+            {children}
         <Scripts />
       </body>
     </html>
