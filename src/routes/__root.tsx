@@ -151,7 +151,8 @@ function RootShell({ children }: { children: ReactNode }) {
                           existing.className = 'preview-fallback';
                           existing.style.width = '100%';
                           existing.style.height = '100%';
-                          existing.style.objectFit = 'cover';
+                          existing.style.objectFit = 'contain';
+                          existing.style.background = '#0f1420';
                           existing.style.display = 'block';
                           existing.style.borderRadius = '12px';
                           existing.style.boxSizing = 'border-box';
@@ -161,16 +162,19 @@ function RootShell({ children }: { children: ReactNode }) {
                         try{ URL.revokeObjectURL(existing.src); }catch(e){}
                         existing.src = URL.createObjectURL(f);
                         // ensure the clear button is clickable above the invisible input
-                        var clearBtn = label.querySelector('span');
-                        if(clearBtn){ clearBtn.style.zIndex = 5; clearBtn.style.pointerEvents = 'auto'; }
+                        var clearBtn = label.querySelector('button, span');
+                        if(clearBtn){ clearBtn.style.zIndex = 10; clearBtn.style.pointerEvents = 'auto'; }
                       }catch(err){console.error('preview-fallback error', err)}
                     });
                     // remove preview when the clear button (✕) is clicked
                     document.addEventListener('click', function(e){
                       var el = e.target;
                       if(!el) return;
-                      if(el.innerText === '✕' || el.textContent === '✕'){
+                      var content = (el.innerText || el.textContent || '').trim();
+                      if(content === '✕'){
                         var label = document.querySelector('label[for="file-input"]');
+                        var input = document.getElementById('file-input');
+                        if(input){ input.value = ''; }
                         var img = label && label.querySelector('img.preview-fallback');
                         if(img){ try{ URL.revokeObjectURL(img.src); }catch(e){} img.remove(); }
                       }
