@@ -153,10 +153,16 @@ function RootShell({ children }: { children: ReactNode }) {
                           existing.style.height = '100%';
                           existing.style.objectFit = 'cover';
                           existing.style.display = 'block';
+                          existing.style.borderRadius = '12px';
+                          existing.style.boxSizing = 'border-box';
+                          existing.style.pointerEvents = 'none';
                           label.insertBefore(existing, label.firstChild);
                         }
                         try{ URL.revokeObjectURL(existing.src); }catch(e){}
                         existing.src = URL.createObjectURL(f);
+                        // ensure the clear button is clickable above the invisible input
+                        var clearBtn = label.querySelector('span');
+                        if(clearBtn){ clearBtn.style.zIndex = 5; clearBtn.style.pointerEvents = 'auto'; }
                       }catch(err){console.error('preview-fallback error', err)}
                     });
                     // remove preview when the clear button (✕) is clicked

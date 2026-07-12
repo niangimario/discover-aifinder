@@ -172,7 +172,7 @@ function Index() {
                       e.stopPropagation();
                       setFoto(null);
                     }}
-                    style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: 999, background: "rgba(0,0,0,0.7)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}
+                    style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: 999, background: "rgba(0,0,0,0.7)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, zIndex: 3, pointerEvents: 'auto' }}
                   >
                     ✕
                   </span>
