@@ -2,23 +2,42 @@ import fs from "fs/promises";
 import path from "path";
 
 const root = process.cwd();
-const outDir = path.join(root, ".output", "public");
-const assetsDir = path.join(outDir, "assets");
+const candidateDirs = [
+  path.join(root, ".vercel", "output", "static"),
+  path.join(root, ".output", "public"),
+];
 
-async function findAsset(pattern) {
+async function findExistingOutDir() {
+  for (const dir of candidateDirs) {
+    try {
+      const stat = await fs.stat(dir);
+      if (stat.isDirectory()) {
+        return dir;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  throw new Error(`Could not find output directory. Tried: ${candidateDirs.join(", ")}`);
+}
+
+async function findAsset(outDir, pattern) {
+  const assetsDir = path.join(outDir, "assets");
   const files = await fs.readdir(assetsDir);
   return files.find((file) => pattern.test(file));
 }
 
 async function main() {
-  const indexJs = await findAsset(/^index-[^.]+\.js$/);
-  const stylesCss = await findAsset(/^styles-[^.]+\.css$/);
+  const outDir = await findExistingOutDir();
+  const assetsDir = path.join(outDir, "assets");
+  const indexJs = await findAsset(outDir, /^index-[^.]+\.js$/);
+  const stylesCss = await findAsset(outDir, /^styles-[^.]+\.css$/);
 
   if (!indexJs) {
-    throw new Error("Could not find built index JS asset in .output/public/assets");
+    throw new Error(`Could not find built index JS asset in ${assetsDir}`);
   }
   if (!stylesCss) {
-    throw new Error("Could not find built styles CSS asset in .output/public/assets");
+    throw new Error(`Could not find built styles CSS asset in ${assetsDir}`);
   }
 
   const html = `<!DOCTYPE html>
@@ -54,7 +73,7 @@ async function main() {
 `;
 
   await fs.writeFile(path.join(outDir, "index.html"), html, "utf8");
-  console.log(`Generated .output/public/index.html referencing /assets/${indexJs}`);
+  console.log(`Generated ${path.relative(root, path.join(outDir, "index.html"))} referencing /assets/${indexJs}`);
 }
 
 main().catch((err) => {
