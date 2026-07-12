@@ -16,7 +16,7 @@ npx vite preview
 
 ```bash
 git add .
-git commit -m "ci: add vercel config and deploy docs"
+git commit -m "ci: add vercel config and static index generation"
 git push origin main
 ```
 
@@ -24,6 +24,7 @@ git push origin main
 - Create a new project and import from GitHub (choose `niangimario/discover-aifinder`).
 - In Project Settings > Build & Output Settings, ensure Build Command is `npm run build` and Output Directory is `.output/public`.
 - Alternatively, Vercel will use `vercel.json` which sets `distDir` to `.output/public`.
+- The build now generates a static `index.html` inside `.output/public` after Vite produces the hashed asset files.
 
 4. Deploy. Vercel will run `npm run build` and serve the generated `.output/public` as a static site.
 
