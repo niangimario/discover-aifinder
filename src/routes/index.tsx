@@ -166,16 +166,21 @@ function Index() {
             >
               {foto ? (
                 <>
-                  <img src={foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <span
+                  <img src={foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "contain", background: "#0f1420" }} />
+                  <button
+                    type="button"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
+                      if (fileRef.current) {
+                        fileRef.current.value = "";
+                      }
                       setFoto(null);
                     }}
-                    style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: 999, background: "rgba(0,0,0,0.7)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, zIndex: 3, pointerEvents: 'auto' }}
+                    style={{ position: "absolute", top: 6, right: 6, width: 24, height: 24, borderRadius: 999, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, zIndex: 10, pointerEvents: 'auto', cursor: 'pointer' }}
                   >
                     ✕
-                  </span>
+                  </button>
                 </>
               ) : (
                 <div style={{ textAlign: "center", fontSize: 11 }}>
@@ -188,7 +193,7 @@ function Index() {
                 type="file"
                 accept="image/*"
                 onChange={onFile}
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", zIndex: 1 }}
               />
             </label>
 
