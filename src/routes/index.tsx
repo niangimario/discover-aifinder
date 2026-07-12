@@ -133,9 +133,8 @@ function Index() {
           style={{ marginTop: 28, background: "#151b28", border: "1px solid #232a3a", borderRadius: 14, padding: 16, textAlign: "left", maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}
         >
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
+            <label
+              htmlFor="file-input"
               style={{
                 width: 112,
                 height: 112,
@@ -171,13 +170,14 @@ function Index() {
                 </div>
               )}
               <input
+                id="file-input"
                 ref={fileRef}
                 type="file"
                 accept="image/*"
                 onChange={onFile}
-                style={{ display: "none" }}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
               />
-            </button>
+            </label>
 
             <div style={{ flex: "1 1 240px", minWidth: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <input
