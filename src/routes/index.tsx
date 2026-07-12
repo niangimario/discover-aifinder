@@ -30,10 +30,21 @@ function Index() {
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
+    console.log('onFile called', { files: e.target.files });
     if (!f) return;
-    const r = new FileReader();
-    r.onload = () => setFoto(r.result as string);
-    r.readAsDataURL(f);
+    try {
+      // Prefer object URL for immediate preview
+      const objectUrl = URL.createObjectURL(f);
+      setFoto(objectUrl);
+      // Also read as data URL in background (optional)
+      const r = new FileReader();
+      r.onload = () => {
+        console.log('FileReader loaded', { resultLength: (r.result as string)?.length });
+      };
+      r.readAsDataURL(f);
+    } catch (err) {
+      console.error('Error reading file', err);
+    }
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -71,6 +82,8 @@ function Index() {
     setStage("form");
     setPhaseIdx(0);
     setProgress(0);
+    // Revoke any object URLs to avoid memory leaks
+    setFoto(null);
   };
 
   return (
